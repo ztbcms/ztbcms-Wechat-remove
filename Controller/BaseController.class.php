@@ -11,9 +11,11 @@ namespace Wechat\Controller;
 use Common\Controller\Base;
 
 class BaseController extends Base {
+
     protected $_wx_user_info = array();
     protected $_userinfo = array();
     protected $_config = array();
+
     protected function _initialize() {
         parent::_initialize();
         $this->_config = cache('Config');
@@ -55,7 +57,7 @@ class BaseController extends Base {
                 $data['userpic'] = $this->_wx_user_info['headimgurl'];
                 $data['modelid'] = $this->_config['wx_modelid']; //根据自己设计设置会员模型
                 $data['regdate'] = time(); //注册的时间
-                $data['regip'] = get_client_ip; //注册的ip地址
+                $data['regip'] = get_client_ip(); //注册的ip地址
                 $data['checked'] = 1; //默认用户是通过审核
                 D('Member')->where("userid='%d'", $userid)->save($data);
                 $add_wx_info = $this->_wx_user_info;
@@ -63,7 +65,7 @@ class BaseController extends Base {
                 $res = D('Wechat')->add($add_wx_info);
                 if ($res) {
                     //添加成功，自动登录
-                    service('Passport')->loginLocal($info['username'], '', $cookieTime ? 86400 * 180 : 86400);
+                    service('Passport')->loginLocal($info['username'], '', 7 * 24 * 60 * 60);
                 } else {
                     //添加失败
                     $this->error('用户注册失败');
@@ -73,7 +75,7 @@ class BaseController extends Base {
                 $member = D('Member')->find($is_register['userid']);
                 if ($member) {
                     //如果有会员信息了，就自动登录
-                    service('Passport')->loginLocal($member['username'], '', $cookieTime ? 86400 * 180 : 86400);
+                    service('Passport')->loginLocal($member['username'], '', 7 * 24 * 60 * 60);
                     $this->_wx_user_info = $is_register;
                 } else {
                     $this->error('数据错误');
@@ -85,14 +87,20 @@ class BaseController extends Base {
         $this->assign('member', $this->_userinfo);
         $this->assign('wx_info', $this->_wx_user_info);
     }
-    /**
-     * 生成认证签名
-     */
 
-    public function signEncode($url, $secret_key) {
+    /***
+     * 生成认证签名
+     *
+     * @param string $url 带有签名的url
+     * @param string $secret_key 签名私钥
+     * @return string
+     */
+    private function signEncode($url, $secret_key) {
         $url_arr = explode('?', $url);
         if (empty($url_arr[1])) {
-            return $this->error('参数错误');
+            $this->error('参数错误');
+
+            return false;
         } else {
             $param_str = $url_arr[1] . "&time=" . time(); //加上签名的时间戳
             $sign = md5(urlencode(trim($param_str)) . $secret_key); //生成签名
@@ -102,18 +110,24 @@ class BaseController extends Base {
 
     /**
      * 签名认证
-     * @param url 带有签名的url
-     * @param secret_key 签名私钥
+     *
+     * @param string $url        带有签名的url
+     * @param string $secret_key 签名私钥
+     * @return bool
      */
-    public function signDecode($url, $secret_key) {
+    private function signDecode($url, $secret_key) {
         $url_arr = explode('?', $url);
         if (empty($url_arr[1])) {
-            return $this->error('参数错误');
+            $this->error('参数错误');
+
+            return false;
         } else {
             $param_sign = explode('&sign=', $url_arr[1]);
             $param = $param_sign[0]; //对于获取到的参数浏览器可能会decode
             if (empty($param_sign[1])) {
-                return $this->error('签名失败');
+                $this->error('签名失败');
+
+                return false;
             } else {
                 $sign = $param_sign[1];
             }
@@ -121,7 +135,9 @@ class BaseController extends Base {
                 //签名成功，可以继续操作
                 return true;
             } else {
-                return $this->error('签名失败');
+                $this->error('签名失败');
+
+                return false;
             }
         }
     }
