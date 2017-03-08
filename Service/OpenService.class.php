@@ -9,7 +9,7 @@
 namespace Wechat\Service;
 
 class OpenService {
-    private $domain = 'http://open.zhutibang.cn';
+    private $domain = 'http://open.ztbopen.cn';
     private $config = null;
 
     function __construct() {
