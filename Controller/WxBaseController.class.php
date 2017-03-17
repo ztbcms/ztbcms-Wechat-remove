@@ -13,6 +13,7 @@ use Common\Controller\Base;
 
 class WxBaseController extends Base {
     public $wx_user_info = array();
+    protected $_config = null;
 
     protected function _initialize() {
         parent::_initialize();
@@ -28,7 +29,7 @@ class WxBaseController extends Base {
                     //没有微信资料
                     $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
                     $param = "url=" . urlencode($url);
-                    $oauthUrl = 'http://open.zhutibang.cn/oauth2/' . $this->_config['open_alias'] . '.html?' . $param;
+                    $oauthUrl = 'http://open.ztbopen.cn/oauth2/' . $this->_config['open_alias'] . '.html?' . $param;
                     redirect($this->signEncode($oauthUrl, $this->_config['open_secret_key']));
                 }
             } else {
