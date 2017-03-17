@@ -33,7 +33,10 @@
                             <img style="width:80px;" src="{$vo.headimgurl}" alt="">
                         </td>
                         <td align="center">{$vo.nickname}</td>
-                        <td align="center">{$vo.sex}</td>
+                        <td align="center">
+                            <if condition="$vo['sex'] EQ 1">男</if>
+                            <if condition="$vo['sex'] EQ 2">女</if>
+                        </td>
                         <td align="center">
                             {$vo.country}
                         </td>
