@@ -50,10 +50,10 @@ class WechatController extends AdminBase {
                 $is_exsit = D('Config')->where("varname='%s'", $key)->find();
                 if ($is_exsit) {
                     $data = array('varname' => $key, 'value' => $value);
-                    D('Config')->where("id='%d'", $is_exsit['id'])->save($data);
+                    M('Config')->where("id='%d'", $is_exsit['id'])->save($data);
                 } else {
                     $data = array('varname' => $key, 'value' => $value);
-                    D('Config')->add($data);
+                    M('Config')->add($data);
                 }
             }
             $this->success('设置成功');

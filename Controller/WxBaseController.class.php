@@ -43,20 +43,20 @@ class WxBaseController extends Base {
             $userinfo = service("Passport")->getInfo();
             if ($userinfo) {
                 //已经是登录会员，检测是否有绑定微信了。
-                $is_binding = D('Wechat')->where("userid='%d'", $userinfo['userid'])->find();
+                $is_binding = M('Wechat')->where("userid='%d'", $userinfo['userid'])->find();
                 if ($is_binding['openid'] != $this->wx_user_info['openid']) {
                     //如果不是绑定的原有微信，则取消该绑定，绑定现有的微信
-                    D('Wechat')->where("id='%d'", $is_binding['id'])->save(array('userid' => 0));
+                    M('Wechat')->where("id='%d'", $is_binding['id'])->save(array('userid' => 0));
                     $this->wx_user_info['userid'] = $userinfo['userid'];
                 }
             }
 
             //最后的结果都是  $this->_wx_user_info 有微信的信息
-            $is_exist = D('Wechat')->where("openid='%s'", $this->wx_user_info['openid'])->find();
+            $is_exist = M('Wechat')->where("openid='%s'", $this->wx_user_info['openid'])->find();
             if ($is_exist) {
-                D('Wechat')->where("id='%d'", $is_exist['id'])->save($this->wx_user_info);
+                M('Wechat')->where("id='%d'", $is_exist['id'])->save($this->wx_user_info);
             } else {
-                D('Wechat')->add($this->wx_user_info);
+                M('Wechat')->add($this->wx_user_info);
             }
         } else {
 
