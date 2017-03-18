@@ -14,13 +14,13 @@ return array(
 	//模块介绍地址
 	'address' => 'http://doc.ztbcms.com/module/wechat/',
 	//模块作者
-	'author' => 'ZtbCMS-zhlhuang',
+	'author' => 'zhlhuang',
 	//作者地址
 	'authorsite' => 'http://github.com/zhlhuang',
 	//作者邮箱
 	'authoremail' => 'zhlhuang888@foxmail.com',
 	//版本号，请不要带除数字外的其他字符
-	'version' => '2.0.0.1',
+	'version' => '2.0.0.2',
 	//适配最低ZtbFCMS版本，
 	'adaptation' => '3.0.0.0',
 	//签名
