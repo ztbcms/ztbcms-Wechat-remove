@@ -10,11 +10,12 @@ class WechatService extends BaseService {
     /**
      * 通过用户id获取openid
      *
+     * @param $open_app_id
      * @param $userid
      * @return array
      */
-    static function getOpenidByUserid($userid) {
-        $res = M('Wechat')->where(['userid' => $userid])->find();
+    static function getOpenidByUserid($open_app_id, $userid) {
+        $res = M('Wechat')->where(['open_app_id' => $open_app_id, 'userid' => $userid])->find();
 
         if ($res) {
             return self::createReturn(true, $res['openid']);
@@ -24,17 +25,16 @@ class WechatService extends BaseService {
     }
 
     /**
-     * 更新微信绑定的用户
+     * 更新openid绑定的用户ID(userid)
      *
+     * @param $open_app_id
      * @param $openid
      * @param $userid
      * @return array
      */
-    static function changeWechatUserid($openid, $userid) {
-        //解除该用户与其他微信绑定
-        M('Wechat')->where(['userid' => $userid])->save(['userid' => 0]);
+    static function changeWechatUserid($open_app_id, $openid, $userid) {
         //将指定微信信息绑定
-        $res = M('Wechat')->where(['openid' => $openid])->save(['userid' => $userid]);
+        $res = M('Wechat')->where(['open_app_id' => $open_app_id, 'openid' => $openid])->save(['userid' => $userid]);
         if ($res) {
             return self::createReturn(true, $res);
         } else {
