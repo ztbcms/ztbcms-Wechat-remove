@@ -17,7 +17,8 @@
             <table width="100%">
                 <thead>
                     <tr>
-                        <td align="center">用户id</td>
+                        <td align="center">userid</td>
+                        <td align="center">app_id</td>
                         <td align="center">openid</td>
                         <td align="center">头像</td>
                         <td align="center">昵称</td>
@@ -30,6 +31,7 @@
                 <volist name="wx_users" id="vo">
                     <tr>
                         <td align="center">{$vo.userid}</td>
+                        <td align="center">{$vo.open_app_id}</td>
                         <td align="center">{$vo.openid}</td>
                         <td align="center">
                             <img style="width:80px;" src="{$vo.headimgurl}" alt="">
