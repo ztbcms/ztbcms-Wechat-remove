@@ -136,7 +136,7 @@ class WechatController extends AdminBase {
     }
 
     /**
-     * 删除
+     * 删除开放平台应用操作
      */
     public function doDeleteApp() {
         $id = I('id');
