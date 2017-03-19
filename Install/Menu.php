@@ -22,10 +22,10 @@ return array(
                 "status" => 1,
                 "name" => "微信用户",
             ), array(
-                "route" => "Wechat/Wechat/setting",
+                "route" => "Wechat/Wechat/appList",
                 "type" => 1,
                 "status" => 1,
-                "name" => "微信设置",
+                "name" => "应用信息",
             ),
         ),
     ),

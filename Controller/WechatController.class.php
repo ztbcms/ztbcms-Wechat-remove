@@ -9,6 +9,7 @@
 namespace Wechat\Controller;
 
 use Common\Controller\AdminBase;
+use Think\Exception;
 
 /**
  * 微信平台管理
@@ -64,4 +65,83 @@ class WechatController extends AdminBase {
             $this->display('setting');
         }
     }
+
+    /**
+     * 开放平台应用列表
+     */
+    public function appList() {
+        $appList = M('WechatApp')->select();
+        $this->assign('data', $appList);
+        $this->display();
+    }
+
+    /**
+     * 创建开放平台应用页面
+     */
+    public function createApp() {
+        $this->display();
+    }
+
+    /**
+     * 创建开放平台应用操作
+     */
+    public function doCreateApp() {
+        $data = I('post.');
+        //若选择为默认时
+        if ($data['default']) {
+            M('WechatApp')->where(['default' => 1])->save(['default' => 0]);
+        }
+        $res = M('WechatApp')->add($data);
+        if ($res) {
+            $this->success('添加成功', U('Wechat/Wechat/appList'));
+        } else {
+            $this->error('操作失败');
+        }
+
+    }
+
+    /**
+     * 编辑开放平台应用页面
+     */
+    public function editApp() {
+        $id = I('get.id');
+        $wechatApp = M('WechatApp')->where(['id' => $id])->find();
+        if (!$wechatApp) {
+            throw new Exception('找不到该应用');
+        }
+
+        $this->assign('data', $wechatApp);
+        $this->display();
+    }
+
+    /**
+     * 编辑开放平台应用操作
+     */
+    public function doEditApp() {
+        $data = I('post.');
+        $id = $data['id'];
+        unset($data['id']);
+        if (empty($id)) {
+            $this->error('缺少参数 id');
+
+            return;
+        }
+        //若选择为默认时
+        if ($data['default']) {
+            M('WechatApp')->where(['default' => 1])->save(['default' => 0]);
+        }
+        M('WechatApp')->where(['id' => $id])->save($data);
+
+        $this->success('操作成功', U('Wechat/Wechat/appList'));
+    }
+
+    /**
+     * 删除
+     */
+    public function doDeleteApp() {
+        $id = I('id');
+        M('WechatApp')->where(['id' => $id])->delete();
+        $this->success('操作成功', U('Wechat/Wechat/appList'));
+    }
+
 }
