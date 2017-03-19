@@ -14,13 +14,14 @@ use Think\Exception;
 
 class WxBaseController extends Base {
     public $wx_user_info = array();
+    public $open_app_id;
 
     protected function _initialize() {
         parent::_initialize();
         //检测是否微信浏览器
         $is_wechat = strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') >= 0 ? true : false;
         if ($is_wechat) {
-            $open_app_id = $this->getOpenAppId();
+            $open_app_id = $this->open_app_id = $this->getOpenAppId();
             if (empty($open_app_id)) {
                 $this->error('缺少参数 open_app_id');
 
@@ -142,13 +143,15 @@ class WxBaseController extends Base {
      * @return mixed
      */
     protected function getOpenAppId() {
-        $open_app_id = I('get.open_app_id');
+        $open_app_id = I('get.open_app_id', session('__open_app_id'));
         $db = M('WechatApp');
+
         if (empty($open_app_id)) {
             //没有指定就检测有无默认配置
             $app = $db->where(['default' => 1])->find();
             $open_app_id = $app['open_app_id'];
         }
+        session('__open_app_id', $open_app_id);
 
         return $open_app_id;
     }
