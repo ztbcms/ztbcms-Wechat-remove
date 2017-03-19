@@ -19,7 +19,7 @@ class WxBaseController extends Base {
         parent::_initialize();
         $this->_config = cache('Config');
         //检测是否微信浏览器
-        $is_wechat = strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger');
+        $is_wechat = strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') >= 0 ? true : false;
         if ($is_wechat) {
             if (!I('get.openid')) {
                 //没有登录
@@ -27,8 +27,8 @@ class WxBaseController extends Base {
                     $this->wx_user_info = session('wx_user_info');
                 } else {
                     //没有微信资料
-                    $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-                    $param = "url=" . urlencode($url);
+                    $return_url = $this->createReturnURL($this->_config['open_app_id']);
+                    $param = "url=" . urlencode($return_url);
                     $oauthUrl = 'http://open.ztbopen.cn/oauth2/' . $this->_config['open_alias'] . '.html?' . $param;
                     redirect($this->signEncode($oauthUrl, $this->_config['open_secret_key']));
                 }
@@ -74,6 +74,7 @@ class WxBaseController extends Base {
         $url_arr = explode('?', $url);
         if (empty($url_arr[1])) {
             $this->error('参数错误');
+
             return false;
         } else {
             $param_str = $url_arr[1] . "&time=" . time(); //加上签名的时间戳
@@ -93,12 +94,14 @@ class WxBaseController extends Base {
         $url_arr = explode('?', $url);
         if (empty($url_arr[1])) {
             $this->error('参数错误');
+
             return false;
         } else {
             $param_sign = explode('&sign=', $url_arr[1]);
             $param = $param_sign[0]; //对于获取到的参数浏览器可能会decode
             if (empty($param_sign[1])) {
                 $this->error('签名失败');
+
                 return false;
             } else {
                 $sign = $param_sign[1];
@@ -108,8 +111,26 @@ class WxBaseController extends Base {
                 return true;
             } else {
                 $this->error('签名失败');
+
                 return false;
             }
         }
+    }
+
+    /**
+     * 构建授权完成后的跳转链接(带有open_app_id参数)
+     *
+     * @param string $open_app_id 微信第三方平台的app_id
+     * @return string
+     */
+    public function createReturnURL($open_app_id) {
+        $current_url = get_url();
+        if (strpos($current_url, '?') !== false) {
+            $current_url .= '&open_app_id=' . $open_app_id;
+        }else{
+            $current_url .= '?open_app_id=' . $open_app_id;
+        }
+
+        return $current_url;
     }
 }
