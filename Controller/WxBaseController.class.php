@@ -10,56 +10,58 @@
 namespace Wechat\Controller;
 
 use Common\Controller\Base;
+use Think\Exception;
 
 class WxBaseController extends Base {
     public $wx_user_info = array();
-    protected $_config = null;
 
     protected function _initialize() {
         parent::_initialize();
-        $this->_config = cache('Config');
         //检测是否微信浏览器
         $is_wechat = strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') >= 0 ? true : false;
         if ($is_wechat) {
+            $open_app_id = $this->getOpenAppId();
+            if (empty($open_app_id)) {
+                $this->error('缺少参数 open_app_id');
+
+                return;
+            }
+            $open_app = $this->getOpenApp($open_app_id);
+
             if (!I('get.openid')) {
                 //没有登录
                 if (session('wx_user_info')) {
                     $this->wx_user_info = session('wx_user_info');
                 } else {
                     //没有微信资料
-                    $return_url = $this->createReturnURL($this->_config['open_app_id']);
+                    $return_url = $this->createReturnURL($open_app_id);
                     $param = "url=" . urlencode($return_url);
-                    $oauthUrl = 'http://open.ztbopen.cn/oauth2/' . $this->_config['open_alias'] . '.html?' . $param;
-                    redirect($this->signEncode($oauthUrl, $this->_config['open_secret_key']));
+                    $oauthUrl = 'http://open.ztbopen.cn/oauth2/' . $open_app['open_alias'] . '.html?' . $param;
+                    redirect($this->signEncode($oauthUrl, $open_app['open_secret_key']));
                 }
             } else {
                 //签名验证
-                $this->signDecode(get_url(), $this->_config['open_secret_key']);
+                $this->signDecode(get_url(), $open_app['open_secret_key']);
                 $wx_user_info = I('get.');
                 session('wx_user_info', $wx_user_info);
                 $this->wx_user_info = session('wx_user_info');
             }
-            //检查是否有会员登录，有会员登录自动绑定会员信息
-            $userinfo = service("Passport")->getInfo();
-            if ($userinfo) {
-                //已经是登录会员，检测是否有绑定微信了。
-                $is_binding = M('Wechat')->where("userid='%d'", $userinfo['userid'])->find();
-                if ($is_binding['openid'] != $this->wx_user_info['openid']) {
-                    //如果不是绑定的原有微信，则取消该绑定，绑定现有的微信
-                    M('Wechat')->where("id='%d'", $is_binding['id'])->save(array('userid' => 0));
-                    $this->wx_user_info['userid'] = $userinfo['userid'];
-                }
-            }
 
-            //最后的结果都是  $this->_wx_user_info 有微信的信息
-            $is_exist = M('Wechat')->where("openid='%s'", $this->wx_user_info['openid'])->find();
-            if ($is_exist) {
-                M('Wechat')->where("id='%d'", $is_exist['id'])->save($this->wx_user_info);
+            //最后的结果都是  $this->wx_user_info 有微信的信息
+            $binding = M('Wechat')->where([
+                "openid" => $this->wx_user_info['openid'],
+                'open_app_id' => $open_app_id
+            ])->find();
+            if ($binding) {
+                //检查是否有会员登录，有会员登录自动绑定会员信息
+                $userinfo = service("Passport")->getInfo();
+                if ($userinfo) {
+                    //如果不是绑定的原有微信，则取消该绑定，绑定现有的微信
+                    M('Wechat')->where(["id" => $binding['id']])->save(array('userid' => $userinfo['userid']));
+                }
             } else {
                 M('Wechat')->add($this->wx_user_info);
             }
-        } else {
-
         }
     }
 
@@ -127,10 +129,48 @@ class WxBaseController extends Base {
         $current_url = get_url();
         if (strpos($current_url, '?') !== false) {
             $current_url .= '&open_app_id=' . $open_app_id;
-        }else{
+        } else {
             $current_url .= '?open_app_id=' . $open_app_id;
         }
 
         return $current_url;
+    }
+
+    /**
+     * 微信环境下，获取的开放平台应用ID(open_app_id)
+     *
+     * @return mixed
+     */
+    protected function getOpenAppId() {
+        $open_app_id = I('get.open_app_id');
+        $db = M('WechatApp');
+        if (empty($open_app_id)) {
+            //没有指定就检测有无默认配置
+            $app = $db->where(['default' => 1])->find();
+            $open_app_id = $app['open_app_id'];
+        }
+
+        return $open_app_id;
+    }
+
+    /**
+     * 获取给定的开放平台应用配置
+     *
+     * @param $open_app_id
+     * @return array
+     * @throws Exception
+     */
+    protected function getOpenApp($open_app_id) {
+        $db = M('WechatApp');
+        if (!empty($open_app_id)) {
+            $app = $db->where(['open_app_id' => $open_app_id])->find();
+        } else {
+            $app = $db->where(['default' => 1])->find();
+        }
+        if (empty($app)) {
+            throw new Exception('请指定默认的开放应用 open_app_id');
+        }
+
+        return $app;
     }
 }
