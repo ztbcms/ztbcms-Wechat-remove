@@ -25,8 +25,8 @@
                         <td align="center">{$vo['wx_app_id']}</td>
                         <td align="center">{$vo['wx_secret_key']}</td>
                         <td align="center">{$vo['open_app_id']}</td>
-                        <td align="center">{$vo['open_app_id']}</td>
-                        <td align="center">{$vo['open_app_id']}</td>
+                        <td align="center">{$vo['open_secret_key']}</td>
+                        <td align="center">{$vo['open_alias']}</td>
                         <td align="center">
                             <if condition="$vo['default'] EQ 1">
                                 是
