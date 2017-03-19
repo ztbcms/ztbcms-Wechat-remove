@@ -7,18 +7,19 @@ use System\Service\BaseService;
  * 微信用户服务
  */
 class WechatService extends BaseService {
+
     /**
-     * 通过用户id获取openid
+     * 获取userid
      *
      * @param $open_app_id
-     * @param $userid
+     * @param $openid
      * @return array
      */
-    static function getOpenidByUserid($open_app_id, $userid) {
-        $res = M('Wechat')->where(['open_app_id' => $open_app_id, 'userid' => $userid])->find();
+    static function getUserid($open_app_id, $openid) {
+        $res = M('Wechat')->where(['open_app_id' => $open_app_id, 'openid' => $openid])->find();
 
         if ($res) {
-            return self::createReturn(true, $res['openid']);
+            return self::createReturn(true, $res['userid']);
         }
 
         return self::createReturn(true, null, '找不到该用户');
