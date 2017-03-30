@@ -27,6 +27,7 @@ CREATE TABLE `cms_wechat_app` (
   `open_secret_key` varchar(256) NOT NULL DEFAULT '' COMMENT '开放平台密钥secret_key',
   `open_alias` varchar(256) NOT NULL DEFAULT '' COMMENT '开放平台的别名',
   `default` tinyint(11) NOT NULL DEFAULT '0' COMMENT '是否默认 0否，1是',
+  `token` varchar(64) NOT NULL DEFAULT '' COMMENT '访问凭证token',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

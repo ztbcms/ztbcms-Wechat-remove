@@ -16,6 +16,8 @@ class WxBaseController extends Base {
     public $wx_user_info = array();
     public $open_app_id;
 
+    const __WECHAT_TOKEN_NAME = 'wechattoken';
+
     protected function _initialize() {
         parent::_initialize();
         //检测是否微信浏览器
@@ -23,7 +25,7 @@ class WxBaseController extends Base {
         if ($is_wechat) {
             $open_app_id = $this->open_app_id = $this->getOpenAppId();
             if (empty($open_app_id)) {
-                $this->error('缺少参数 open_app_id');
+                $this->error('缺少参数 open_app_id(开放平台 app_id)');
 
                 return;
             }
@@ -34,7 +36,7 @@ class WxBaseController extends Base {
                 if (session('wx_user_info')) {
                     $this->wx_user_info = session('wx_user_info');
                 } else {
-                    //没有微信资料
+                    //没有微信用户资料
                     $return_url = $this->createReturnURL($open_app_id);
                     $param = "url=" . urlencode($return_url);
                     $oauthUrl = 'http://open.ztbopen.cn/oauth2/' . $open_app['open_alias'] . '.html?' . $param;
@@ -43,7 +45,19 @@ class WxBaseController extends Base {
             } else {
                 //签名验证
                 $this->signDecode(get_url(), $open_app['open_secret_key']);
+
+                //token校验
+                if(C("WECHAT_TOKEN_ON")){
+                    $app = M('WechatApp')->where(['open_app_id' => $open_app_id, 'token' => I('get.' . self::__WECHAT_TOKEN_NAME)])->find();
+                    if(empty($app)){
+                        throw new Exception('应用Token校验失败');
+                    }
+                    //删除token 只有一次有效
+                    M('WechatApp')->where(['open_app_id' => $open_app_id, 'token' => I('get.' . self::__WECHAT_TOKEN_NAME)])->save(['token' => '']);
+                }
+
                 $wx_user_info = I('get.');
+                unset($wx_user_info[self::__WECHAT_TOKEN_NAME]);
                 session('wx_user_info', $wx_user_info);
                 $this->wx_user_info = session('wx_user_info');
             }
@@ -132,6 +146,13 @@ class WxBaseController extends Base {
             $current_url .= '&open_app_id=' . $open_app_id;
         } else {
             $current_url .= '?open_app_id=' . $open_app_id;
+        }
+
+        //生成token
+        if(C("WECHAT_TOKEN_ON")){
+            $new_token = md5($open_app_id . time());
+            M('WechatApp')->where(['open_app_id' => $open_app_id])->save(['token' => $new_token]);
+            $current_url .= '&' . self::__WECHAT_TOKEN_NAME . '=' . $new_token;
         }
 
         return $current_url;
