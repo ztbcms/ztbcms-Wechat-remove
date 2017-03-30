@@ -29,3 +29,12 @@ CREATE TABLE `cms_wechat_app` (
   `default` tinyint(11) NOT NULL DEFAULT '0' COMMENT '是否默认 0否，1是',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `cms_wechat_msg` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `app_id` int(11) NOT NULL,
+  `template_id` varchar(64) NOT NULL DEFAULT '',
+  `title` varchar(128) NOT NULL DEFAULT '',
+  `description` varchar(512) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
