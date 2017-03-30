@@ -141,7 +141,80 @@ class WechatController extends AdminBase {
     public function doDeleteApp() {
         $id = I('id');
         M('WechatApp')->where(['id' => $id])->delete();
+        M('WechatMsg')->where(['app_id' => $id])->delete();
         $this->success('操作成功', U('Wechat/Wechat/appList'));
+    }
+
+    /**
+     * 模板消息列表页面
+     */
+    public function tplMessages() {
+        $app_id = I('get.app_id');
+        $list = M('WechatMsg')->where(['app_id' => $app_id])->select();
+        $this->assign('data', $list);
+        $this->display();
+    }
+
+    /**
+     * 添加模板消息页
+     */
+    public function createTplMessage() {
+        $this->display();
+    }
+
+    /**
+     * 添加模板消息操作
+     */
+    public function doCreateTplMessage() {
+        $data = I('post.');
+        if (empty($data['template_id'])) {
+            throw new Exception('模板ID不能为空');
+        }
+
+        $res = M("WechatMsg")->add($data);
+        if ($res) {
+            $this->success('操作成功', U('Wechat/Wechat/tplMessages',['app_id' => $data['app_id']]));
+        } else {
+            $this->error('操作失败');
+        }
+    }
+
+    /**
+     * 编辑模板消息页
+     */
+    public function editTplMessage() {
+        $app_id = I('get.app_id');
+        $id = I('get.id');
+        $data = M('WechatMsg')->where(['app_id' => $app_id, 'id' => $id])->find();
+        $this->assign('data', $data);
+        $this->display();
+    }
+
+    /**
+     * 编辑模板消息操作
+     */
+    public function doEditTplMessage() {
+        $data = I('post.');
+        $id = $data['id'];
+        unset($data['id']);
+        if (empty($id)) {
+            $this->error('缺少参数 id');
+
+            return;
+        }
+        M('WechatMsg')->where(['id' => $id])->save($data);
+
+        $this->success('操作成功', U('Wechat/Wechat/tplMessages', ['app_id' => $data['app_id']]));
+    }
+
+    /**
+     * 删除模板消息操作
+     */
+    public function doDeleteTplMessage() {
+        $app_id = I('post.app_id');
+        $id = I('post.id');
+        $result = M('WechatMsg')->where(['id' => $id])->delete();
+        $this->success('操作成功', U('Wechat/Wechat/tplMessages', ['app_id' => $app_id]));
     }
 
 }
