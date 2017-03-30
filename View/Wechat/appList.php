@@ -36,6 +36,7 @@
                         </td>
 
                         <td align="center">
+                            <a class="btn btn-primary" href="{:U('Wechat/Wechat/tplMessages', ['app_id' => $vo['id']])}">模板消息</a>
                             <a class="btn btn-primary" href="{:U('Wechat/Wechat/editApp', ['id' => $vo['id']])}">编辑</a>
                             <a class="btn btn-danger" href="javascript:deleteApp('{$vo["id"]}')">删除</a>
                         </td>
@@ -58,6 +59,7 @@
             if (confirm('确认删除?')) {
                 $.ajax({
                     url: "{:U('Wechat/Wechat/doDeleteApp')}",
+                    type: 'post',
                     data: {
                         'id': id
                     },
