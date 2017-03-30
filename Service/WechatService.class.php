@@ -42,4 +42,22 @@ class WechatService extends BaseService {
             return self::createReturn(false, '', '更新微信绑定的用户失败');
         }
     }
+
+    /**
+     * 根据open_app_id 和 name获取模板消息
+     *
+     * @param $open_app_id
+     * @param $name
+     * @return array
+     */
+    static function getTemplateIDByName($open_app_id, $name){
+        $app = M('WechatApp')->where(['open_app_id' => $open_app_id])->find();
+        $res = M('WechatMsg')->where(['app_id' => $app['id'], 'name' => $name])->find();
+        if($res){
+            return self::createReturn(true, $res['template_id']);
+        }else{
+            return self::createReturn(false, null);
+        }
+
+    }
 }
