@@ -146,7 +146,7 @@ class WechatController extends AdminBase {
     }
 
     /**
-     * 模板消息列表
+     * 模板消息列表页面
      */
     public function tplMessages() {
         $app_id = I('get.app_id');
@@ -208,7 +208,7 @@ class WechatController extends AdminBase {
     }
 
     /**
-     * 删除模板消息
+     * 删除模板消息操作
      */
     public function doDeleteTplMessage() {
         $app_id = I('post.app_id');
