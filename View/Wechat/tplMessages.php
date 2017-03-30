@@ -7,9 +7,9 @@
             <table width="100%">
                 <thead>
                 <tr>
-                    <td align="center">ID</td>
-                    <td align="center">标题</td>
-                    <td align="center">英文名</td>
+                    <td align="center" width="50px">ID</td>
+                    <td align="center" width="150px">标题</td>
+                    <td align="center" width="160px">英文名</td>
                     <td align="center">模板ID</td>
                     <td align="center">描述</td>
                     <td align="center">管理操作</td>

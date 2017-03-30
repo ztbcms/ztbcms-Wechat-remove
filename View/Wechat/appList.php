@@ -7,8 +7,8 @@
             <table width="100%">
                 <thead>
                 <tr>
-                    <td align="center">ID</td>
-                    <td align="center">名称</td>
+                    <td align="center" width="50px">ID</td>
+                    <td align="center" width="150px">名称</td>
                     <td align="center">微信 app_id</td>
                     <td align="center">微信 secret_key</td>
                     <td align="center">开放平台 app_id</td>
