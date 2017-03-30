@@ -56,7 +56,7 @@
     ;
     (function ($, window) {
         window.deleteApp = function (id) {
-            if (confirm('确认删除?')) {
+            if (confirm('确认删除改微信应用以及关联信息（如模板消息）?')) {
                 $.ajax({
                     url: "{:U('Wechat/Wechat/doDeleteApp')}",
                     type: 'post',

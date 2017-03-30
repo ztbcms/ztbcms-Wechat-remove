@@ -141,6 +141,7 @@ class WechatController extends AdminBase {
     public function doDeleteApp() {
         $id = I('id');
         M('WechatApp')->where(['id' => $id])->delete();
+        M('WechatMsg')->where(['app_id' => $id])->delete();
         $this->success('操作成功', U('Wechat/Wechat/appList'));
     }
 
