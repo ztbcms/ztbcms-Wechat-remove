@@ -9,6 +9,7 @@
                 <tr>
                     <td align="center">ID</td>
                     <td align="center">标题</td>
+                    <td align="center">英文名</td>
                     <td align="center">模板ID</td>
                     <td align="center">描述</td>
                     <td align="center">管理操作</td>
@@ -18,6 +19,7 @@
                     <tr>
                         <td align="center">{$vo['id']}</td>
                         <td align="center">{$vo['title']}</td>
+                        <td align="center">{$vo['name']}</td>
                         <td align="center">{$vo['template_id']}</td>
                         <td align="center">{$vo['description']}</td>
 

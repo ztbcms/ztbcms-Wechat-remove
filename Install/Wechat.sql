@@ -33,9 +33,10 @@ CREATE TABLE `cms_wechat_app` (
 
 CREATE TABLE `cms_wechat_msg` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `app_id` int(11) NOT NULL,
-  `template_id` varchar(64) NOT NULL DEFAULT '',
-  `title` varchar(128) NOT NULL DEFAULT '',
-  `description` varchar(512) NOT NULL DEFAULT '',
+  `app_id` int(11) NOT NULL COMMENT '应用ID',
+  `name` varchar(64) NOT NULL COMMENT '英文名',
+  `template_id` varchar(64) NOT NULL DEFAULT '' COMMENT '模板ID',
+  `title` varchar(128) NOT NULL DEFAULT '' COMMENT '标题',
+  `description` varchar(512) NOT NULL DEFAULT '' COMMENT '描述',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

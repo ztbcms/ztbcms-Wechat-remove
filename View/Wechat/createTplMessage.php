@@ -14,18 +14,21 @@
                     <td colspan="2" style="background: #eee;">模板消息</td>
                 </tr>
                 <tr>
-                    <td width="100px"><label for="">标题</label></td>
-                    <td><input value="" name="title" style="width:300px;" class="form-control" type="text"></td>
+                    <td width="100px"><label for="">模板名称</label></td>
+                    <td><input value="" name="title" style="width:300px;" class="form-control" type="text" placeholder="如：订单通知"></td>
+                </tr>
+                <tr>
+                    <td width="100px"><label for="">英文名</label></td>
+                    <td><input value="{$data['name']}" name="name" style="width:300px;" class="form-control" type="text" placeholder="如：order_notify"></td>
                 </tr>
                 <tr>
                     <td width="100px"><label for="">模板ID</label></td>
-                    <td><input value="" name="template_id" style="width:300px;" class="form-control" type="text">
+                    <td><input value="" name="template_id" style="width:300px;" class="form-control" type="text" placeholder="微信平台的模板ID">
                     </td>
                 </tr>
                 <tr>
                     <td width="100px"><label for="">模板描述</label></td>
                     <td>
-<!--                        <input value="" name="description" style="width:300px;" class="form-control" type="text">-->
                         <textarea  class="form-control" name="description" style="width:300px;" rows="4"></textarea>
                     </td>
                 </tr>

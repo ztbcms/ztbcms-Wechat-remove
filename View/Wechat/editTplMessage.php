@@ -18,6 +18,10 @@
                     <td><input value="{$data['title']}" name="title" style="width:300px;" class="form-control" type="text"></td>
                 </tr>
                 <tr>
+                    <td width="100px"><label for="">英文名</label></td>
+                    <td><input value="{$data['name']}" name="name" style="width:300px;" class="form-control" type="text"></td>
+                </tr>
+                <tr>
                     <td width="100px"><label for="">模板ID</label></td>
                     <td><input value="{$data['template_id']}" name="template_id" style="width:300px;" class="form-control" type="text">
                     </td>
@@ -25,7 +29,6 @@
                 <tr>
                     <td width="100px"><label for="">模板描述</label></td>
                     <td>
-<!--                        <input value="{$data['description']}" name="description" style="width:300px;" class="form-control" type="text">-->
                         <textarea  class="form-control" name="description" style="width:300px;" rows="4">{$data['description']}</textarea>
                     </td>
                 </tr>
