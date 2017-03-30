@@ -20,11 +20,11 @@ return array(
 	//作者邮箱
 	'authoremail' => 'zhlhuang888@foxmail.com',
 	//版本号，请不要带除数字外的其他字符
-	'version' => '3.0.0.0',
+	'version' => '3.0.1.0',
 	//适配最低ZtbFCMS版本，
 	'adaptation' => '3.0.0.0',
 	//签名
-	'sign' => 'b19cc279ed484c13c96c2f7142e2f437',
+	'sign' => '1aadbcb060ccb23cea16e886b9de7f57',
 	//依赖模块
 	'depend' => array(
 		'Member'
