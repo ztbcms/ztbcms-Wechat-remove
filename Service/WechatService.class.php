@@ -60,4 +60,20 @@ class WechatService extends BaseService {
         }
 
     }
+
+    /**
+     * 根据open_app_id 获取应用
+     *
+     * @param $open_app_id
+     * @return array
+     * @throws \Exception
+     */
+    static function getApp($open_app_id){
+        $app = M('WechatApp')->where(['open_app_id' => $open_app_id])->find();
+        if(empty($app)){
+            return self::createReturn(false,null, '找不到该应用');
+        }
+
+        return self::createReturn(true, $app);
+    }
 }
