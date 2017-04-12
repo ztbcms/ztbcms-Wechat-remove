@@ -40,3 +40,28 @@ CREATE TABLE `cms_wechat_msg` (
   `description` varchar(512) NOT NULL DEFAULT '' COMMENT '描述',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `cms_wechat_pay_order` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `return_code` varchar(255) DEFAULT NULL COMMENT '调用结果',
+  `return_msg` varchar(255) DEFAULT NULL COMMENT '调用信息',
+  `appid` varchar(128) DEFAULT NULL COMMENT 'app_id',
+  `mch_id` varchar(128) DEFAULT NULL COMMENT '商户id',
+  `nonce_str` varchar(32) DEFAULT NULL COMMENT '随机码',
+  `sign` varchar(255) DEFAULT NULL COMMENT '签名',
+  `result_code` varchar(255) DEFAULT NULL COMMENT '业务代码',
+  `openid` varchar(255) DEFAULT NULL COMMENT '用户openid',
+  `is_subscribe` varchar(16) DEFAULT NULL COMMENT '是否关注',
+  `trade_type` varchar(32) DEFAULT NULL COMMENT '交易类型',
+  `bank_type` varchar(32) DEFAULT NULL COMMENT '银行',
+  `total_fee` int(11) DEFAULT NULL COMMENT '交易总额',
+  `fee_type` varchar(255) DEFAULT NULL COMMENT '钱币类型',
+  `transaction_id` varchar(255) DEFAULT NULL COMMENT '流水号',
+  `out_trade_no` varchar(255) DEFAULT NULL COMMENT '订单号',
+  `attach` varchar(255) DEFAULT NULL COMMENT '附加值',
+  `time_end` varchar(128) DEFAULT NULL COMMENT '结束时间',
+  `trade_state` varchar(255) DEFAULT NULL COMMENT '交易状态',
+  `trade_state_desc` varchar(255) DEFAULT NULL COMMENT '交易解释',
+  `cash_fee` int(11) DEFAULT NULL COMMENT '现金金额（不知道是什么）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
