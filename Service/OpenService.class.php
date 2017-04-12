@@ -9,7 +9,9 @@
 
 namespace Wechat\Service;
 
-class OpenService {
+use System\Service\BaseService;
+
+class OpenService extends BaseService {
     private $domain = 'http://open.ztbopen.cn';
     private $open_app = null;
 
@@ -22,6 +24,63 @@ class OpenService {
         }
     }
 
+    /**
+     * 支付回调
+     *
+     * @param $callback
+     * @return mixed
+     */
+    public function wxpayNotify($callback) {
+        $data = I('post.');
+        //获取到支付回调订单，open返回的。
+        $open_sign = $data['open_sign'];
+        $local_sign = md5($data['sign'] . $this->open_app['open_secret_key'] . $data['open_time']);
+        if ($open_sign == $local_sign) {
+            //签名成功
+            // 获取微信支付订单信息
+            $res = $this->getPayInfo($data['out_trade_no']);
+            if ($res['return_code']) {
+                //调用成功
+                WxpayService::updateWxpayOrderInfo($res);
+            }
+
+            return $callback(['status' => true, 'data' => $data, 'msg' => 'ok']);
+        } else {
+            //签名失败
+            return $callback(['status' => false, 'msg' => '签名失败', 'data' => $data]);
+        }
+    }
+
+    /**
+     * 获取支付订单信息
+     *
+     * @param $out_trade_no
+     * @return mixed
+     */
+    public function getPayInfo($out_trade_no) {
+        $time = time(); //当前时间戳
+        $sign = $this->getSign($time);
+        $api_url = $this->domain . "/api/wxpay_api/get_pay_info/app_id/" . $this->open_app['open_app_id'] . ".html?time={$time}&sign={$sign}";
+        $res_json = $this->get($api_url, ['out_trade_no' => $out_trade_no]);
+        $res = json_decode($res_json, 1);
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(false, $res_json, '');
+        }
+    }
+
+    /**
+     * 获取微信支付配置
+     *
+     * @param        $openid       支付用户id
+     * @param        $out_trade_no 支付订单号
+     * @param        $fee          支付金额 以 fen 为单位
+     * @param string $notify_url   回调地址
+     * @param string $body         支付标题
+     * @param string $detail       支付详情
+     * @return bool|mixed
+     */
 
     public function getWxpayConfig($openid, $out_trade_no, $fee, $notify_url = '', $body = '', $detail = '') {
         $time = time(); //当前时间戳
@@ -38,7 +97,11 @@ class OpenService {
         $res_json = $this->post($api_url, $send_data);
         $res = json_decode($res_json, 1);
 
-        return $res ? $res : $res_json;
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(false, $res_json, '');
+        }
     }
 
     /**
@@ -58,7 +121,11 @@ class OpenService {
         $res_json = $this->post($api_url, $send_data);
         $res = json_decode($res_json, 1);
 
-        return $res ? $res : $res_json;
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(false, $res_json, '');
+        }
     }
 
     /**
@@ -78,7 +145,11 @@ class OpenService {
         $res_json = $this->post($api_url, $send_data);
         $res = json_decode($res_json, 1);
 
-        return $res ? $res : $res_json;
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(false, $res_json, '');
+        }
     }
 
     /**
