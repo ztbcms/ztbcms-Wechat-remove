@@ -9,7 +9,9 @@
 
 namespace Wechat\Service;
 
-class OpenService {
+use System\Service\BaseService;
+
+class OpenService extends BaseService {
     private $domain = 'http://open.ztbopen.cn';
     private $open_app = null;
 
@@ -61,8 +63,11 @@ class OpenService {
         $api_url = $this->domain . "/api/wxpay_api/get_pay_info/app_id/" . $this->open_app['open_app_id'] . ".html?time={$time}&sign={$sign}";
         $res_json = $this->get($api_url, ['out_trade_no' => $out_trade_no]);
         $res = json_decode($res_json, 1);
-
-        return $res ? $res : $res_json;
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(false, $res_json, '');
+        }
     }
 
     /**
@@ -92,7 +97,11 @@ class OpenService {
         $res_json = $this->post($api_url, $send_data);
         $res = json_decode($res_json, 1);
 
-        return $res ? $res : $res_json;
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(false, $res_json, '');
+        }
     }
 
     /**
@@ -112,7 +121,11 @@ class OpenService {
         $res_json = $this->post($api_url, $send_data);
         $res = json_decode($res_json, 1);
 
-        return $res ? $res : $res_json;
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(false, $res_json, '');
+        }
     }
 
     /**
@@ -132,7 +145,11 @@ class OpenService {
         $res_json = $this->post($api_url, $send_data);
         $res = json_decode($res_json, 1);
 
-        return $res ? $res : $res_json;
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(false, $res_json, '');
+        }
     }
 
     /**
