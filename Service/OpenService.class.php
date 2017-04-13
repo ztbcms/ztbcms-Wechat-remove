@@ -44,10 +44,10 @@ class OpenService extends BaseService {
                 WxpayService::updateWxpayOrderInfo($res);
             }
 
-            return $callback(['status' => true, 'data' => $data, 'msg' => 'ok']);
+            return $callback(self::createReturn(true, $data, 'ok'));
         } else {
             //签名失败
-            return $callback(['status' => false, 'msg' => '签名失败', 'data' => $data]);
+            return $callback(self::createReturn(false, $data, '签名失败'));
         }
     }
 
