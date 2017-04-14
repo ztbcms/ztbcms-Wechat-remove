@@ -39,9 +39,9 @@ class OpenService extends BaseService {
             //签名成功
             // 获取微信支付订单信息
             $res = $this->getPayInfo($data['out_trade_no']);
-            if ($res['return_code']) {
+            if ($res['status']) {
                 //调用成功
-                WxpayService::updateWxpayOrderInfo($res);
+                WxpayService::updateWxpayOrderInfo($res['data']);
             }
 
             return $callback(self::createReturn(true, $data, 'ok'));
@@ -61,7 +61,7 @@ class OpenService extends BaseService {
         $time = time(); //当前时间戳
         $sign = $this->getSign($time);
         $api_url = $this->domain . "/api/wxpay_api/get_pay_info/app_id/" . $this->open_app['open_app_id'] . ".html?time={$time}&sign={$sign}";
-        $res_json = $this->get($api_url, ['out_trade_no' => $out_trade_no]);
+        $res_json = $this->httpGet($api_url, ['out_trade_no' => $out_trade_no]);
         $res = json_decode($res_json, 1);
         if ($res) {
             return self::createReturn(true, $res, 'ok');
@@ -94,7 +94,7 @@ class OpenService extends BaseService {
             'body' => $body,
             'detail' => $detail,
         );
-        $res_json = $this->post($api_url, $send_data);
+        $res_json = $this->httpPost($api_url, $send_data);
         $res = json_decode($res_json, 1);
 
         if ($res) {
@@ -118,7 +118,7 @@ class OpenService extends BaseService {
             'img_id' => $img_id,
         );
 
-        $res_json = $this->post($api_url, $send_data);
+        $res_json = $this->httpPost($api_url, $send_data);
         $res = json_decode($res_json, 1);
 
         if ($res) {
@@ -142,7 +142,7 @@ class OpenService extends BaseService {
             'img_url' => $img_url,
         );
 
-        $res_json = $this->post($api_url, $send_data);
+        $res_json = $this->httpPost($api_url, $send_data);
         $res = json_decode($res_json, 1);
 
         if ($res) {
@@ -162,7 +162,7 @@ class OpenService extends BaseService {
      * @param $topcolor     string 颜色16进制
      * @return mixed
      */
-    public function send_template($openid, $template_id, $data, $url = null, $topcolor = '#f7f7f7') {
+    public function sendTemplate($openid, $template_id, $data, $url = null, $topcolor = '#f7f7f7') {
         $time = time();//当前时间戳
         //注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
         $sign = $this->sign_encode($this->config['open_app_id'], $time, $this->config['open_secret_key']);
@@ -174,10 +174,14 @@ class OpenService extends BaseService {
             'topcolor' => $topcolor,
             'data' => json_encode($data)
         );
-        $res_json = $this->post($api_url, $send_data);
+        $res_json = $this->httpPost($api_url, $send_data);
         $res = json_decode($res_json, 1);
 
-        return $res ? $res : $res_json;
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(false, $res_json, '');
+        }
     }
 
     public function getSign($time) {
@@ -191,7 +195,7 @@ class OpenService extends BaseService {
      * @param array  $param
      * @return mixed
      */
-    function get($url, $param = array()) {
+    function httpGet($url, $param = array()) {
         if (!is_array($param)) {
             return false;
         }
@@ -233,7 +237,7 @@ class OpenService extends BaseService {
      * @param array $param
      * @return bool|mixed
      */
-    function post($url, $param = array()) {
+    function httpPost($url, $param = array()) {
         if (empty($param)) {
             return false;
         }
