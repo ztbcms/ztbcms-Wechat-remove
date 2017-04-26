@@ -165,8 +165,8 @@ class OpenService extends BaseService {
     public function sendTemplate($openid, $template_id, $data, $url = null, $topcolor = '#f7f7f7') {
         $time = time();//当前时间戳
         //注意配置的模块，如果配置在Wechat/Conf中，其他模块调用可能出问题
-        $sign = $this->sign_encode($this->config['open_app_id'], $time, $this->config['open_secret_key']);
-        $api_url = $this->domain . "/api/template_api/send_template/app_id/" . $this->config['open_app_id'] . ".html?time={$time}&sign={$sign}";
+        $sign = $this->getSign($time);
+        $api_url = $this->domain . "/api/template_api/send_template/app_id/" . $this->open_app['open_app_id'] . ".html?time={$time}&sign={$sign}";
         $send_data = array(
             'touser' => $openid,
             'template_id' => $template_id,
