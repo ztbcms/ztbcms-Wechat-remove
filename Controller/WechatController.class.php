@@ -72,14 +72,14 @@ class WechatController extends AdminBase {
     public function appList() {
         $appList = M('WechatApp')->select();
         $this->assign('data', $appList);
-        $this->display();
+        $this->display('appList');
     }
 
     /**
      * 创建开放平台应用页面
      */
     public function createApp() {
-        $this->display();
+        $this->display('createApp');
     }
 
     /**
@@ -111,7 +111,7 @@ class WechatController extends AdminBase {
         }
 
         $this->assign('data', $wechatApp);
-        $this->display();
+        $this->display('editApp');
     }
 
     /**
@@ -152,7 +152,7 @@ class WechatController extends AdminBase {
         $app_id = I('get.app_id');
         $list = M('WechatMsg')->where(['app_id' => $app_id])->select();
         $this->assign('data', $list);
-        $this->display();
+        $this->display('tplMessages');
     }
 
     /**
@@ -187,7 +187,7 @@ class WechatController extends AdminBase {
         $id = I('get.id');
         $data = M('WechatMsg')->where(['app_id' => $app_id, 'id' => $id])->find();
         $this->assign('data', $data);
-        $this->display();
+        $this->display('doCreateTplMessage');
     }
 
     /**
