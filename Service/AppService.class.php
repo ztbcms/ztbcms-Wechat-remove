@@ -35,8 +35,8 @@ class AppService {
      * @param null  $url
      * @return array|string
      */
-    public function getJsSdk($array, $is_debug = true, $url = null) {
-        $app = $this->create_app();
+    static function getJsSdk($array, $is_debug = true, $url = null) {
+        $app = self::create_app();
         $js = $app->js;
         $js->setUrl($url);
 
