@@ -9,6 +9,24 @@ use System\Service\BaseService;
 class WechatService extends BaseService {
 
     /**
+     * @param      $userid
+     * @param null $open_app_id
+     * @return array
+     */
+    static function getWechatInfoByUserid($userid, $open_app_id = null) {
+        if (!$open_app_id) {
+            //默认的app id
+            $open_app_id = M('WechatApp')->order('`default` DESC')->find()['wx_app_id'];
+        }
+        $res = M('Wechat')->where(['open_app_id' => $open_app_id, 'userid' => $userid])->find();
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(true, null, '该用户未绑定');
+        }
+    }
+
+    /**
      * 获取userid
      *
      * @param $open_app_id
