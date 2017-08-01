@@ -187,7 +187,7 @@ class WechatController extends AdminBase {
         $id = I('get.id');
         $data = M('WechatMsg')->where(['app_id' => $app_id, 'id' => $id])->find();
         $this->assign('data', $data);
-        $this->display('doCreateTplMessage');
+        $this->display();
     }
 
     /**
