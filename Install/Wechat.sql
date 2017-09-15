@@ -15,7 +15,7 @@ CREATE TABLE `cms_wechat` (
   `privilege` varchar(255) NOT NULL DEFAULT '' COMMENT '特权信息',
   `open_app_id` varchar(255) NOT NULL DEFAULT '' COMMENT '开放平台app_id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `cms_wechat_app` (
@@ -64,4 +64,4 @@ CREATE TABLE `cms_wechat_pay_order` (
   `trade_state_desc` varchar(255) DEFAULT NULL COMMENT '交易解释',
   `cash_fee` int(11) DEFAULT NULL COMMENT '现金金额（不知道是什么）',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
