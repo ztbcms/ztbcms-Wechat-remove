@@ -48,18 +48,13 @@ class WxBaseController extends Base {
 
                 //token校验
                 if (C("WECHAT_TOKEN_ON")) {
-                    $app = M('WechatApp')->where([
-                        'open_app_id' => $open_app_id,
-                        'token' => I('get.' . self::__WECHAT_TOKEN_NAME)
-                    ])->find();
-                    if (empty($app)) {
-                        throw new Exception('应用Token校验失败');
+                    $received_token = I('get.' . self::__WECHAT_TOKEN_NAME);
+
+                    if ($received_token != session(self::__WECHAT_TOKEN_NAME)) {
+                        throw new Exception('Token校验失败');
                     }
-                    //删除token 只有一次有效
-                    M('WechatApp')->where([
-                        'open_app_id' => $open_app_id,
-                        'token' => I('get.' . self::__WECHAT_TOKEN_NAME)
-                    ])->save(['token' => '']);
+
+                    session(self::__WECHAT_TOKEN_NAME, null);
                 }
 
                 $wx_user_info = I('get.');
@@ -157,7 +152,7 @@ class WxBaseController extends Base {
         //生成token
         if (C("WECHAT_TOKEN_ON")) {
             $new_token = md5($open_app_id . time());
-            M('WechatApp')->where(['open_app_id' => $open_app_id])->save(['token' => $new_token]);
+            session(self::__WECHAT_TOKEN_NAME, $new_token);
             $current_url .= '&' . self::__WECHAT_TOKEN_NAME . '=' . $new_token;
         }
 
