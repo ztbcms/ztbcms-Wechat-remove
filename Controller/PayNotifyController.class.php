@@ -18,8 +18,15 @@ class PayNotifyController extends Base {
     public function rechargeNotify() {
         $open_service = new OpenService();
         $open_service->wxpayNotify(function ($result) {
+            if($result['status']){
+                //签名验证正确
+            }else{
+                //签名验证错误
+            }
+
             // result 调用成功回调，不一定是支付成功
             echo 'SUCCESS';
+            exit();
         });
     }
 }
