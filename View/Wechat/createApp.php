@@ -47,7 +47,7 @@
                 </tr>
                 <tr>
                     <td width="100px"><label for="">alias</label></td>
-                    <td><input value="" name="open_alias" style="width:300px;" class="form-control" type="text"></td>
+                    <td><input value="" name="open_alias" style="width:300px;" class="form-control" type="text" placeholder="公众号的微信号"></td>
                 </tr>
                 <tr>
                     <td width="100px"><label for="">默认</label></td>
