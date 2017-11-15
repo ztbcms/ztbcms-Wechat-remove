@@ -101,9 +101,9 @@ class OpenService extends BaseService {
         $res = json_decode($res_json, 1);
 
         if ($res) {
-            return self::createReturn(true, $res, 'ok');
+            return self::createReturn(true, $res, '操作成功');
         } else {
-            return self::createReturn(false, $res_json, '');
+            return self::createReturn(false, $res_json, '操作失败');
         }
     }
 
