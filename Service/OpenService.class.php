@@ -11,7 +11,11 @@ namespace Wechat\Service;
 
 use System\Service\BaseService;
 
+/**
+ * 主题邦第三方微信平台服务
+ */
 class OpenService extends BaseService {
+
     private $domain = 'http://open.ztbopen.cn';
     private $open_app = null;
 
@@ -25,9 +29,9 @@ class OpenService extends BaseService {
     }
 
     /**
-     * 支付回调
+     * 支付回调脚丫处理
      *
-     * @param $callback
+     * @param callable $callback 处理回调
      * @return mixed
      */
     public function wxpayNotify($callback) {
@@ -73,15 +77,14 @@ class OpenService extends BaseService {
     /**
      * 获取微信支付配置
      *
-     * @param        $openid       支付用户id
-     * @param        $out_trade_no 支付订单号
-     * @param        $fee          支付金额 以 fen 为单位
+     * @param string $openid       支付用户id
+     * @param string $out_trade_no 支付订单号
+     * @param int $fee          支付金额 单位：分
      * @param string $notify_url   回调地址
      * @param string $body         支付标题
      * @param string $detail       支付详情
      * @return bool|mixed
      */
-
     public function getWxpayConfig($openid, $out_trade_no, $fee, $notify_url = '', $body = '', $detail = '') {
         $time = time(); //当前时间戳
         $sign = $this->getSign($time);
