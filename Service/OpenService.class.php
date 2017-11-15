@@ -10,6 +10,7 @@
 namespace Wechat\Service;
 
 use System\Service\BaseService;
+use Think\Log;
 
 /**
  * 主题邦第三方微信平台服务
@@ -29,13 +30,14 @@ class OpenService extends BaseService {
     }
 
     /**
-     * 支付回调脚丫处理
+     * [主题邦第三方平台支付]支付结果通知处理
      *
      * @param callable $callback 处理回调
      * @return mixed
      */
-    public function wxpayNotify($callback) {
+    public function wxpayNotify(callable $callback) {
         $data = I('post.');
+        Log::write('wxpayNotify:'.json_encode($data));
         //获取到支付回调订单，open返回的。
         $open_sign = $data['open_sign'];
         $local_sign = md5($data['sign'] . $this->open_app['open_secret_key'] . $data['open_time']);
@@ -54,6 +56,27 @@ class OpenService extends BaseService {
             return $callback(self::createReturn(false, $data, '签名验证失败'));
         }
     }
+
+    /**
+     * [微信原生支付]支付结果通知处理
+     *
+     * @param callable $callback
+     */
+    public function wxpayRawNotify(callable $callback){
+        //获取通知的数据
+        $xml = file_get_contents('php://input');
+        Log::write('wxpayRawNotify:'.$xml);
+        try{
+            $result = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+
+            //TODO 实现签名验证参数校验逻辑
+
+            $callback(self::createReturn(true, $result, '校验成功'));
+        }catch (\Exception $exception){
+            $callback(self::createReturn(false, $xml, '解析异常'));
+        }
+    }
+
 
     /**
      * 获取支付订单信息
