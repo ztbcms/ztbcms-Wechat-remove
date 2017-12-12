@@ -76,6 +76,8 @@ class WxBaseController extends Base {
                     M('Wechat')->where(["id" => $binding['id']])->save(array('userid' => $userinfo['userid']));
                 }
             } else {
+                //删除id，避免授权请求链接带有ID的情况下，引致的数据库插入错误
+                unset($this->wx_user_info['id']);
                 M('Wechat')->add($this->wx_user_info);
             }
         }
