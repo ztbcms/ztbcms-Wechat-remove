@@ -16,7 +16,7 @@ class WechatService extends BaseService {
     static function getWechatInfoByUserid($userid, $open_app_id = null) {
         if (!$open_app_id) {
             //默认的app id
-            $open_app_id = M('WechatApp')->order('`default` DESC')->find()['wx_app_id'];
+            $open_app_id = M('WechatApp')->order('`default` DESC')->find()['open_app_id'];
         }
         $res = M('Wechat')->where(['open_app_id' => $open_app_id, 'userid' => $userid])->find();
         if ($res) {
