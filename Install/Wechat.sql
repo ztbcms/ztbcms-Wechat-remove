@@ -65,3 +65,28 @@ CREATE TABLE `cms_wechat_pay_order` (
   `cash_fee` int(11) DEFAULT NULL COMMENT '现金金额（不知道是什么）',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `cms_wechat_refund_order` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `return_code` varchar(255) NOT NULL COMMENT '调用结果',
+  `return_msg` varchar(255) NOT NULL COMMENT '调用信息',
+  `appid` varchar(128) NOT NULL COMMENT 'app_id',
+  `mch_id` varchar(128) NOT NULL COMMENT '商户id',
+  `nonce_str` varchar(32) NOT NULL  COMMENT '随机码',
+  `sign` varchar(255) NOT NULL COMMENT '签名',
+  `result_code` varchar(255) NOT NULL COMMENT '业务代码',
+  `transaction_id` varchar(255) NOT NULL COMMENT '流水号',
+  `out_trade_no` varchar(255) NOT NULL COMMENT '订单号',
+  `out_refund_no` varchar(255) NOT NULL COMMENT '退款单号',
+  `refund_id` varchar(255) NOT NULL,
+  `refund_channel` varchar(255) NOT NULL,
+  `refund_fee` varchar(255) NOT NULL,
+  `coupon_refund_fee` varchar(255) NOT NULL,
+  `total_fee` varchar(255) NOT NULL COMMENT '退款金额',
+  `cash_fee` varchar(255) NOT NULL,
+  `coupon_refund_count` varchar(255) NOT NULL,
+  `cash_refund_fee` varchar(255) NOT NULL,
+  `err_code` varchar(255) NOT NULL COMMENT '错误码',
+  `err_code_des` varchar(255) NOT NULL COMMENT '错误描述',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
