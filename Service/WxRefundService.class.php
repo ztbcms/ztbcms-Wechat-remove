@@ -16,8 +16,8 @@ class WxRefundService extends BaseService {
     //1.商户key 可在open平台拿到
     const MCH_KEY = '';
     //2.证书路径 可在商户平台下载
-    const SSLCERT_PATH = APP_PATH.'Wechat/Cert/apiclient_cert.pem';
-    const SSLKEY_PATH = APP_PATH.'Wechat/Cert/apiclient_key.pem';
+    const SSLCERT_PATH = 'apiclient_cert.pem';
+    const SSLKEY_PATH = 'apiclient_key.pem';
 
     /**
      * 退款 依赖wechat_pay_order表
