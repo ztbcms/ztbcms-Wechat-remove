@@ -1,19 +1,24 @@
 <?php
 
-// +----------------------------------------------------------------------
-// | Copyright (c) Zhutibang.Inc 2016 http://zhutibang.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Author: zhlhuang <zhlhuang888@foxmail.com>
-// | 微信绑定模块
-// +----------------------------------------------------------------------
+/**
+ * author: Jayin <tonjayin@gmail.com>
+ */
 
 namespace Wechat\Controller;
 
 use Common\Controller\Base;
 use Think\Exception;
 
-class WxBaseController extends Base {
-    public $wx_user_info = array();
+/**
+ * 静默授权（只获取用户openid）
+ */
+class SilentWxBaseController extends Base {
+
+    /**
+     * 授权获取的用户openid
+     * @var string|null
+     */
+    public $wx_openid = null;
     public $open_app_id;
 
     const __WECHAT_TOKEN_NAME = 'wechattoken';
@@ -33,13 +38,13 @@ class WxBaseController extends Base {
 
             if (!I('get.openid')) {
                 //没有登录
-                if (session('wx_user_info')) {
-                    $this->wx_user_info = session('wx_user_info');
+                if (session('wx_openid')) {
+                    $this->wx_openid = session('wx_openid');
                 } else {
                     //没有微信用户资料
                     $return_url = $this->createReturnURL($open_app_id);
                     $param = "url=" . urlencode($return_url);
-                    $oauthUrl = 'http://open.ztbopen.cn/oauth2/' . $open_app['open_alias'] . '.html?' . $param;
+                    $oauthUrl = 'http://open.ztbopen.cn/oauth2_base/' . $open_app['open_alias'] . '.html?' . $param;
                     redirect($this->signEncode($oauthUrl, $open_app['open_secret_key']));
                 }
             } else {
@@ -57,28 +62,10 @@ class WxBaseController extends Base {
                     session(self::__WECHAT_TOKEN_NAME, null);
                 }
 
-                $wx_user_info = I('get.');
-                unset($wx_user_info[self::__WECHAT_TOKEN_NAME]);
-                session('wx_user_info', $wx_user_info);
-                $this->wx_user_info = session('wx_user_info');
-            }
-
-            //最后的结果都是  $this->wx_user_info 有微信的信息
-            $binding = M('Wechat')->where([
-                "openid" => $this->wx_user_info['openid'],
-                'open_app_id' => $open_app_id
-            ])->find();
-            if ($binding) {
-                //检查是否有会员登录，有会员登录自动绑定会员信息
-                $userinfo = service("Passport")->getInfo();
-                if ($userinfo) {
-                    //如果不是绑定的原有微信，则取消该绑定，绑定现有的微信
-                    M('Wechat')->where(["id" => $binding['id']])->save(array('userid' => $userinfo['userid']));
-                }
-            } else {
-                //删除id，避免授权请求链接带有ID的情况下，引致的数据库插入错误
-                unset($this->wx_user_info['id']);
-                M('Wechat')->add($this->wx_user_info);
+                //保存openid
+                $wx_openid = I('get.openid');
+                session('wx_openid', $wx_openid);
+                $this->wx_openid = session('wx_openid');
             }
         }
     }
@@ -200,4 +187,5 @@ class WxBaseController extends Base {
 
         return $app;
     }
+
 }

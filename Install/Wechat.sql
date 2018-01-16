@@ -15,7 +15,7 @@ CREATE TABLE `cms_wechat` (
   `privilege` varchar(255) NOT NULL DEFAULT '' COMMENT '特权信息',
   `open_app_id` varchar(255) NOT NULL DEFAULT '' COMMENT '开放平台app_id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `cms_wechat_app` (
@@ -27,7 +27,6 @@ CREATE TABLE `cms_wechat_app` (
   `open_secret_key` varchar(256) NOT NULL DEFAULT '' COMMENT '开放平台密钥secret_key',
   `open_alias` varchar(256) NOT NULL DEFAULT '' COMMENT '开放平台的别名',
   `default` tinyint(11) NOT NULL DEFAULT '0' COMMENT '是否默认 0否，1是',
-  `token` varchar(64) NOT NULL DEFAULT '' COMMENT '访问凭证token',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -90,3 +89,4 @@ CREATE TABLE `cms_wechat_refund_order` (
   `err_code_des` varchar(255) NOT NULL COMMENT '错误描述',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

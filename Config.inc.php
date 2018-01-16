@@ -6,7 +6,7 @@
 
 return array(
 	//模块名称
-	'modulename' => '微信管理模块',
+	'modulename' => '微信管理',
 	//图标
 	'icon' => 'https://dn-coding-net-production-pp.qbox.me/e57af720-f26c-4f3b-90b9-88241b680b7b.png',
 	//模块简介
@@ -20,7 +20,7 @@ return array(
 	//作者邮箱
 	'authoremail' => 'zhlhuang888@foxmail.com',
 	//版本号，请不要带除数字外的其他字符
-	'version' => '3.0.2.1',
+	'version' => '3.0.3.2',
 	//适配最低ZtbFCMS版本，
 	'adaptation' => '3.0.0.0',
 	//签名

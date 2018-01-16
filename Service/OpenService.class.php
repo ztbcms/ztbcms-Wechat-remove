@@ -10,8 +10,13 @@
 namespace Wechat\Service;
 
 use System\Service\BaseService;
+use Think\Log;
 
+/**
+ * 主题邦第三方微信平台服务
+ */
 class OpenService extends BaseService {
+
     private $domain = 'http://open.ztbopen.cn';
     private $open_app = null;
 
@@ -25,13 +30,14 @@ class OpenService extends BaseService {
     }
 
     /**
-     * 支付回调
+     * [主题邦第三方平台支付]支付结果通知处理
      *
-     * @param $callback
+     * @param callable $callback 处理回调
      * @return mixed
      */
-    public function wxpayNotify($callback) {
+    public function wxpayNotify(callable $callback) {
         $data = I('post.');
+        Log::write('wxpayNotify:'.json_encode($data));
         //获取到支付回调订单，open返回的。
         $open_sign = $data['open_sign'];
         $local_sign = md5($data['sign'] . $this->open_app['open_secret_key'] . $data['open_time']);
@@ -44,12 +50,33 @@ class OpenService extends BaseService {
                 WxpayService::updateWxpayOrderInfo($res['data']);
             }
 
-            return $callback(self::createReturn(true, $data, 'ok'));
+            return $callback(self::createReturn(true, $data, '签名验证通过'));
         } else {
             //签名失败
-            return $callback(self::createReturn(false, $data, '签名失败'));
+            return $callback(self::createReturn(false, $data, '签名验证失败'));
         }
     }
+
+    /**
+     * [微信原生支付]支付结果通知处理
+     *
+     * @param callable $callback
+     */
+    public function wxpayRawNotify(callable $callback){
+        //获取通知的数据
+        $xml = file_get_contents('php://input');
+        Log::write('wxpayRawNotify:'.$xml);
+        try{
+            $result = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+
+            //TODO 实现签名验证参数校验逻辑
+
+            $callback(self::createReturn(true, $result, '校验成功'));
+        }catch (\Exception $exception){
+            $callback(self::createReturn(false, $xml, '解析异常'));
+        }
+    }
+
 
     /**
      * 获取支付订单信息
@@ -73,15 +100,14 @@ class OpenService extends BaseService {
     /**
      * 获取微信支付配置
      *
-     * @param        $openid       支付用户id
-     * @param        $out_trade_no 支付订单号
-     * @param        $fee          支付金额 以 fen 为单位
+     * @param string $openid       支付用户id
+     * @param string $out_trade_no 支付订单号
+     * @param int $fee          支付金额 单位：分
      * @param string $notify_url   回调地址
      * @param string $body         支付标题
      * @param string $detail       支付详情
      * @return bool|mixed
      */
-
     public function getWxpayConfig($openid, $out_trade_no, $fee, $notify_url = '', $body = '', $detail = '') {
         $time = time(); //当前时间戳
         $sign = $this->getSign($time);
@@ -98,9 +124,9 @@ class OpenService extends BaseService {
         $res = json_decode($res_json, 1);
 
         if ($res) {
-            return self::createReturn(true, $res, 'ok');
+            return self::createReturn(true, $res, '操作成功');
         } else {
-            return self::createReturn(false, $res_json, '');
+            return self::createReturn(false, $res_json, '操作失败');
         }
     }
 
