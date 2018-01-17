@@ -24,6 +24,7 @@
                         <td align="center">{$vo['description']}</td>
 
                         <td align="center">
+                            <a class="btn btn-primary" href="javascript:;" onclick="sendTplMessage('{:I("get.app_id")}', '{$vo["id"]}')">测试发送</a>
                             <a class="btn btn-primary" href="{:U('Wechat/Wechat/editTplMessage', ['app_id' => I('get.app_id'), 'id' => $vo['id']])}">编辑</a>
                             <a class="btn btn-danger" href="javascript:deleteItem('{:I("get.app_id")}', '{$vo["id"]}')">删除</a>
                         </td>
@@ -67,6 +68,15 @@
             }
         }
     })(jQuery, window);
+
+    function sendTplMessage(app_id, id){
+        layer.open({
+            title: '发送模版消息',
+            type: 2,
+            content: "{:U('Wechat/Wechat/sendTplMessage')}&app_id="+app_id+'&id='+id,
+            area: ['60%', '80%']
+        });
+    }
 </script>
 </body>
 </html>

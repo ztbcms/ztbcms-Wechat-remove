@@ -10,6 +10,7 @@ namespace Wechat\Controller;
 
 use Common\Controller\AdminBase;
 use Think\Exception;
+use Wechat\Service\OpenService;
 
 /**
  * 微信平台管理
@@ -217,4 +218,24 @@ class WechatController extends AdminBase {
         $this->success('操作成功', U('Wechat/Wechat/tplMessages', ['app_id' => $app_id]));
     }
 
+    /**
+     * 发送模版消息
+     */
+    public function doSend(){
+        $openid = I('post.openid');
+        if(!$openid){
+            $this->ajaxReturn(self::createReturn(true, null, '缺少参数：openid'));
+        }
+        $params = I('post.params');
+        $id = I('post.id');
+        $template_id = M('WechatMsg')->where(['id' => $id])->getField('template_id');
+
+        $open = new OpenService();
+        $res = $open->sendTemplate($openid, $template_id, $params);
+        if($res['msg'] == 'ok'){
+            $this->ajaxReturn(self::createReturn(true, null, '发送成功'));
+        }else{
+            $this->ajaxReturn(self::createReturn(true, null, '发送失败'));
+        }
+    }
 }
