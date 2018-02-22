@@ -10,6 +10,9 @@ namespace Wechat\Service;
 
 use System\Service\BaseService;
 
+/**
+ * 微信退款
+ */
 class WxRefundService extends BaseService {
 
     //TODO
