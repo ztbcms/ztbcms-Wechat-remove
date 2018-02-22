@@ -10,14 +10,23 @@ namespace Wechat\Service;
 
 use System\Service\BaseService;
 
+/**
+ * 微信退款
+ */
 class WxRefundService extends BaseService {
 
     //TODO
     //1.商户key 可在open平台拿到
     const MCH_KEY = '';
     //2.证书路径 可在商户平台下载
-    const SSLCERT_PATH = 'apiclient_cert.pem';
-    const SSLKEY_PATH = 'apiclient_key.pem';
+    //证书路径
+    static function getSslCertPah(){
+        return 'apiclient_cert.pem';
+    }
+    //签名key文件路径
+    static function getSslKeyPath(){
+        return 'apiclient_key.pem';
+    }
 
     /**
      * 退款 依赖wechat_pay_order表
@@ -89,8 +98,8 @@ class WxRefundService extends BaseService {
             return self::createReturn(false, null, '缺少参数');
         }
         //证书
-        $sslcert_path = self::SSLCERT_PATH;
-        $sslkey_path = self::SSLKEY_PATH;
+        $sslcert_path = self::getSslCertPah();
+        $sslkey_path = self::getSslKeyPath();
 
         $ch = curl_init();
         //设置超时
