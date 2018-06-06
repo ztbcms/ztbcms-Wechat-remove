@@ -1,7 +1,7 @@
 <Admintemplate file="Common/Head"/>
 <body class="J_scroll_fixed">
 
-<div class="wrap J_check_wrap" id="app" v-cloak>
+<div class="wrap J_check_wrap">
     <div class="h_a">发送模版消息</div>
     <form id="form" class="J_ajaxForm">
         <div class="table_full">
