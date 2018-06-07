@@ -219,6 +219,17 @@ class WechatController extends AdminBase {
     }
 
     /**
+     * 发送模版消息页面
+     */
+    public function sendTplMessage(){
+        $app_id = I('get.app_id');
+        $id = I('get.id');
+        $data = M('WechatMsg')->where(['app_id' => $app_id, 'id' => $id])->find();
+        $this->assign('data', $data);
+        $this->display();
+    }
+
+    /**
      * 发送模版消息
      */
     public function doSend(){
@@ -235,7 +246,7 @@ class WechatController extends AdminBase {
         if($res['msg'] == 'ok'){
             $this->ajaxReturn(self::createReturn(true, null, '发送成功'));
         }else{
-            $this->ajaxReturn(self::createReturn(true, null, '发送失败'));
+            $this->ajaxReturn(self::createReturn(false, null, '发送失败'));
         }
     }
 }
